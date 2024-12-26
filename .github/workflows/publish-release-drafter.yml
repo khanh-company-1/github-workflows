@@ -18,7 +18,6 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Get the most recent tag (if no tag input provided)
-      id: get-tag
       if: ${{ !github.event.inputs.tag }}
       run: |
         git fetch --tags
@@ -32,16 +31,16 @@ jobs:
         echo "Most recent tag: $MOST_RECENT_TAG"
         echo "RELEASE_VERSION=$MOST_RECENT_TAG" >> $GITHUB_ENV
 
-      - name: Set release version
-        run: echo "Using RELEASE_VERSION=${{ github.event.inputs.tag || env.RELEASE_VERSION }}"
+    - name: Set release version
+      run: echo "Using RELEASE_VERSION=${{ github.event.inputs.tag || env.RELEASE_VERSION }}"
 
-      - name: Use Release Drafter
-        uses: release-drafter/release-drafter@v6
-        with:
-          disable-autolabeler: true
-          name: ${{ env.RELEASE_VERSION }} 🐙
-          tag: ${{ env.RELEASE_VERSION }}
-          version: ${{ env.RELEASE_VERSION }}
-          publish: ${{ github.event.inputs.publish }}
+    - name: Use Release Drafter
+      uses: release-drafter/release-drafter@v6
+      with:
+        disable-autolabeler: true
+        name: ${{ env.RELEASE_VERSION }} 🐙
+        tag: ${{ env.RELEASE_VERSION }}
+        version: ${{ env.RELEASE_VERSION }}
+        publish: ${{ github.event.inputs.publish }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
