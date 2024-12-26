@@ -18,6 +18,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Get the most recent tag (if no tag input provided)
+      id: get-tag
       if: ${{ !github.event.inputs.tag }}
       run: |
         git fetch --tags
