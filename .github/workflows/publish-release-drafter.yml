@@ -30,6 +30,7 @@ jobs:
 
         echo "Most recent tag: $MOST_RECENT_TAG"
         echo "RELEASE_VERSION=$MOST_RECENT_TAG" >> $GITHUB_ENV
+        echo "Publish input value: ${{ github.event.inputs.publish }}"
 
     - name: Set release version
       run: echo "Using RELEASE_VERSION=${{ github.event.inputs.tag || env.RELEASE_VERSION }}"
@@ -41,6 +42,6 @@ jobs:
         name: ${{ env.RELEASE_VERSION }} 🐙
         tag: ${{ env.RELEASE_VERSION }}
         version: ${{ env.RELEASE_VERSION }}
-        publish: ${{ github.event.inputs.publish }}
+        publish: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
