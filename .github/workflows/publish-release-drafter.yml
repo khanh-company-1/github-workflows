@@ -1,0 +1,45 @@
+name: Reusable Release Drafter Publisher
+
+on:
+  workflow_call:
+    inputs:
+      publish:
+        required: false
+        default: true
+        type: boolean
+      tag:
+        required: false
+        type: string
+
+  publish_release_drafter:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Get the most recent tag (if no tag input provided)
+      if: ${{ !github.event.inputs.tag }}
+      run: |
+        git fetch --tags
+        MOST_RECENT_TAG=$(git tag --sort=-creatordate | head -n 1)
+
+        if [ -z "$MOST_RECENT_TAG" ]; then
+          echo "Error: No tag found in the repository."
+          exit 1
+        fi
+
+        echo "Most recent tag: $MOST_RECENT_TAG"
+        echo "RELEASE_VERSION=$MOST_RECENT_TAG" >> $GITHUB_ENV
+
+      - name: Set release version
+        run: echo "Using RELEASE_VERSION=${{ github.event.inputs.tag || env.RELEASE_VERSION }}"
+
+      - name: Use Release Drafter
+        uses: release-drafter/release-drafter@v6
+        with:
+          disable-autolabeler: true
+          name: ${{ env.RELEASE_VERSION }} 🐙
+          tag: ${{ env.RELEASE_VERSION }}
+          version: ${{ env.RELEASE_VERSION }}
+          publish: ${{ github.event.inputs.publish }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
