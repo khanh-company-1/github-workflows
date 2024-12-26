@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  update_release_draft:
+  update_release_drafter:
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@v6
