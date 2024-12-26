@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: release-drafter/release-drafter@v6
         with:
-          commitish: main
+          commitish: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
