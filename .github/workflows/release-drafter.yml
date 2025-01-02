@@ -4,15 +4,15 @@ on:
   workflow_call:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   update_release_draft:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - name: Log github.ref_name
-        run: echo "github.ref_name is ${{ github.ref_name }}"
       - uses: release-drafter/release-drafter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
