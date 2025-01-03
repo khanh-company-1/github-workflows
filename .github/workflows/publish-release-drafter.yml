@@ -8,7 +8,6 @@ on:
         type: string
       commitish:
         required: false
-        default: main
         type: string
       publish:
         required: false
@@ -39,17 +38,26 @@ jobs:
 
     - name: Configure Release Settings
       run: |
-        if [[ "$RELEASE_VERSION" == v10.* && $(git branch -r | grep "origin/release/10.0") ]]; then
-          echo "COMMITISH=release/10.0" >> $GITHUB_ENV
+        if [[ -z "$COMMITISH" ]]; then
+          # Extract version number from RELEASE_VERSION, e.g., "v10.0.1" => "10"
+          VERSION_NUMBER=$(echo "$RELEASE_VERSION" | sed -E 's/^v([0-9]+)\..*/\1/')
+          
+          # Check if the branch for this version exists and set COMMITISH
+          if [[ $(git branch -r | grep "origin/release/$VERSION_NUMBER.0") ]]; then
+            echo "COMMITISH=release/$VERSION_NUMBER.0" >> $GITHUB_ENV
+          else
+            echo "COMMITISH=main" >> $GITHUB_ENV
+          fi
         fi
       env:
         RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        COMMITISH: ${{ env.COMMITISH }}
 
     - name: Use Release Drafter
       uses: release-drafter/release-drafter@v6
       with:
         disable-autolabeler: true
-        name: ${{ env.RELEASE_VERSION }} 🐙
+        name: ${{ env.RELEASE_VERSION }} 🛒
         tag: ${{ env.RELEASE_VERSION }}
         version: ${{ env.RELEASE_VERSION }}
         commitish: ${{ env.COMMITISH }}
