@@ -23,11 +23,14 @@ jobs:
           else
             exit 0
           fi
-
-          if [[ "$GITHUB_EVENT_NAME" = release/* ]]; then
-            RELEASE_VERSION="${GITHUB_EVENT_NAME#release/}"
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
+          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
+          if [[ "$GITHUB_REF_NAME" = release/* ]]; then
+            RELEASE_VERSION="${GITHUB_REF_NAME#release/}"
             echo "DRAFTER_NAME=Next Release $RELEASE_VERSION 🛒" >> $GITHUB_ENV
             echo "DRAFTER_TAG=next-$RELEASE_VERSION" >> $GITHUB_ENV
+            echo "RELEASE_VERSION: $RELEASE_VERSION"
           fi
 
       - uses: release-drafter/release-drafter@v6
